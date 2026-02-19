@@ -1,1 +1,188 @@
 \section{Introduction}
+
+
+
+
+Key contributions:
+1. We introduce the first method to evaluate LLM's capabilities to find ICPs
+2. We enable persona benchmarking on generalised social simulation.
+3. Release the most predictive? personas dataset 
+
+\section{Evaluation}
+We discussed reddit polls but they dont give us the repsonses of the individuals, we can only see the opinion of the group. This can be used to evaluate the
+Posts - question
+comments- answer
+If we construct qna from posts and comments at scale, we c
+
+Social simulation is the ability to approximate the beliefs, preferences, and decisions of individuals or groups. Benchmarks such as OpinionQA, GlobalOpinionQA, CultureBench, and CultureNLI evaluate whether models can reproduce survey responses and culturally conditioned judgments. Broader suites such as SIMBENCH unify diverse datasets spanning moral dilemmas, economic games, psychological inventories, judgment tasks, and problem-solving questions. They do not evaluate interest-level and consumption-based behaviors such as books people read, movies they enjoy, or products they buy.
+Human behavior is much more than answering survey questions. People express who they are through their tastes, habits, purchases, hobbies, and media preferences. Because we do not measure these dimensions, we cannot clearly assess how well LLMs simulate realistic personas. And if we cannot measure this capability, we cannot systematically improve it
+
+Recent studies have shown that just demographics are enough to do group social simulations to an extent, diminishing the core proposition of fine grained and detailed personas. But this is not true, to establish the need and importance of fine grained and detailed personas we bring a second evaluation regime where the need of detailed personas shine. To target an appropriate subpopulation or demographic we need these attributes such as their interests, xxx yyy. 
+This motivates ICP to be a natural extension of the capabilities that must be exhibited by a dataset of personas.
+
+LLM predicted social simulations
+
+1. Census: Accurate, but shallow, does decent survey simulation
+2. Twin-2k-500: Survey based, high depth, low coverage, manual and static 
+3. PersonaHub/PERSONA: 1M synthetic / synthetic+real -> Introduce a lot of LLM driven biases and are not actually predictive of social simulations / survey [PromiseWithACatch]
+
+ICP is the inverse of social simulation. Ideal Customer Profiles are structured representations of the types of individuals who are most likely to purchase, adopt, or engage with a product or service. While social simulation asks, “Given a person or group, what will they believe or do?”, ICP asks, “Given a product or goal, which types of people are most likely to respond?” We create a benchmark for ICP using amazon reviews data. Elaborate.
+
+There are 4 parts of social simulation:
+1. Filter the target population for the task.
+2. Choose which attributes of the persona are relevant to the task
+3. Simulate the persona.
+4. Aggregate the responses of different personas to get a group simulation.
+
+Survey research, what questions should be asked,
+
+
+1. Send responses of ZIP user study
+
+Our key contributions
+\begin{enumerate}
+    \item ICP
+    \item Social Simulation
+\end{enumerate}
+
+How to evaluate ICP
+\begin{enumerate}
+    \item TARGET\_PERSONAS: Start with Amazon reviews (User persona is products + ZIP style personas from reviews)
+    \item 0\_SHOT\_CANDIDATES: First generate generic personas (correct+incorrect from 0-shot LLM)
+    \item 0\_SHOT\_CORRECT\_CANDIDATES: Filter out incorrect segments from matching on TARGET\_PERSONAS.
+    \item Now your model has to generate personas unique from 0-shot, and accurate on target
+\end{enumerate}
+
+How to evaluate Social Simulation
+\begin{enumerate}
+    \item OpinionQA, GlobalOpinionQA, CultureBench, and CultureNLI
+    \item SIMBENCH unifies 20 diverse datasets, covering moral dilemmas, economic games, psychological assessments, judgment tasks, and problem-solving questions. Examples include ChaosNLI, MoralMachine, Choices13k, AfroBarometer, OpinionQA, OSPsychBig5, NumberGame, DICES990, WisdomOfCrowds, Jester, LatinoBarometro, ISSP
+    \item \textbf{BUT} Group level simulation misses a broad set of evaluations for eg: books, movies, etc because of which personas are not holistic enough. Using only locale we can also predict google trends.
+    \item Frozen: Select personas and then select attributes, Hot: LLM will generate the personas.
+\end{enumerate}
+
+
+Baselines for ICP
+\begin{enumerate}
+    \item LLM Call -> Inaccurate / Generic
+\end{enumerate}
+
+Baselines for Social Simulation
+\begin{enumerate}
+    \item LLM Call -> Inaccurate
+    \item Census -> Demographics
+\end{enumerate}
+
+
+How to evaluate ICP
+
+
+
+\paragraph{How to evaluate Social Simulation}
+
+SIMBENCH 
+
+
+
+Select profiles and then simulate them? Why would we need that-- because not all profiles are important everywhwere . Think of it as ICP x social simulation
+
+
+We want to evaluate persona sets. 
+
+Improving: Create synthetic personas and train them on simulation tasks, use the reward from the task as signal.
+
+
+
+
+
+\begin{itemize}
+    \item How important is coverage
+    \item How important is depth
+\end{itemize}
+
+Facts that we know
+\begin{itemize}
+    \item LLMs cannot simulate all aspects or very detailed personas to a great extent, and it is actually not completely known what the exact problem is
+    \begin{itemize}
+        \item Is it the context length and LLM not being able to infer from X number of attributes at once
+        \item Are there certain aspects of persona that LLMs are not able to simulate
+    \end{itemize}
+\end{itemize}
+
+
+\paragraph{Persona Discovery from Offline Data}
+There is research on extracting personality traits like MBTI and Demographics from Behavioral traces (Reddit, Twitter, Instagram), demonstrating a direct link between observable digital behavior and this psychological construct. However, this data has been annotated by experts, and is not open vocabulary, only limited to MBTI and Demographics \cite{XXX}. To this end we present a graph structure based approach to convert Human behavior on social networks to Open ended, diverse, large scale, automated personas, we also measure its accuracy on existing benchmarks. 
+
+\paragraph{Online Persona Refinement / Extraction}
+- New User: Today we ask them to fill forms, which are not complete and tedious, we can tailor user profiling online and with their existing persona estimates. So, given a target task, initial persona (possibly empty), we present our algorithm to plan and reason questions sequentially, to build a persona e.g. big 5 etc required to simulate the behavior on this task. This presents the first social reasoning and planning task through a steady framework, grounded in actual human behavior.
+
+Humans over centuries have.... kinship, socially amicable, etc
+
+\paragraph{Persona Simulation}
+What axes of a persona can LLMs today simulate? https://www.nature.com/articles/s41586-023-06647-8
+We can show this using comment reconstruction. Behavior-to-Behavior
+
+-> Memorability prediction using user persona: Using the persona constructed by their user survery can we predict which ads the user will remember in few/zero shot.
+\paragraph{Persona Volume Estimation}
+ICPs- how to extract them?
+Website prefs
+Polymarket
+Google trends- captures the temporal aspect 
+Ahref- measure IoU between audiences identified from ahref vs reddit 
+Flickr
+Visual prefs
+
+
+\begin{enumerate}
+    \item Persona Discovery from Offline behavioral traces (comments / posts / activity)
+    \item Persona Discovery from Online forms (previous methods do static behavioral profiling, here we show xyz) This is a task of social planning and reasoning
+    \item These, combined lead to a real world large dataset of personas.
+    \item What aspects of a discovered persona can be simulated from an LLM? A thorough benchmark of LLM Roleplay beyond traditional user profiles. We can do this using comment reconstruction
+    \item Once we know the set of personas, and the simulatable set of attributes amongst these, how can we estimate their size in and outside the domain we have captured them (Reddit vs Polymarket / AHRef) marking this method of Persona Discovery, Simulation, and Volume estimation agnostic
+\end{enumerate}
+
+
+Opinion datasets used in Align Via Actions: OpinionQA, GlobalOpinionQA, CultureBench, and CultureNLI
+
+A good use case for ICP is discovering Cross brand collaborations. Some prominent ones are:
+\begin{itemize}
+    \item Chess x Duolingo- people who enjoy learning and mental challenges
+    \item Uber x Spotify
+    \item GoPro x Red Bull
+    \item BMV x LV- luxury couples
+\end{itemize}
+If we can infer personas from Reddit and identify those that emerge as ICPs for multiple brands, we can uncover non-obvious overlaps in audience segments which can help identify potential branc collabs.
+
+
+
+Sources for ICP test set:
+\begin{itemize}
+    \item Nielsonns: https://themarkup.org/privacy/2023/06/08/from-heavy-purchasers-of-pregnancy-tests-to-the-depression-prone-we-found-650000-ways-advertisers-label-you
+
+    Dataset: https://www.kaggle.com/datasets/konradb/targeted-audience-segmentation
+
+    \item Infer target audience from twitter campaigns. 
+    \item Infer intent from ahref keywords which can be used to infer audiences
+    \item Ads of the world dataset
+    \item LOO personas from reddit, find personas who show explicit product mentions, remove their comments and posts related to them and try to dicover these interests from the rest of the persona.
+\end{itemize}
+
+\section{Evaluation}
+We should have an evaluation that gives
+``US population with one persona per person, and all details "
+
+
+
+
+1. Depth vs Coverage: 2k-500 is 2k rows, 500 columns vs 200k rows 500 columns
+
+Contributions:
+1. Persona dataset with large-scale  detailed personas. We show that our personas are predictive of a wide range of tasks for eg: movies, books, product recs.
+2. Benchmarking and evaluation of persona datasets. We propose a method to evaluate opinion simulation for both group and individual tasks. 
+a. Group- we show how to align your personas to the target distribution(for eg US census) and simulate opinions with this new persona distribution. Example tasks: Google trends, NSS/GSS.
+b. Indvidual- There are 2 kinds of tasks: Few shot and 0 shot. Few shot can be amazon reviews data, where you have some reviews made by this person and want to predict their interest in another product. In 0 shot we have ICP, where we want to only use the personas to find ICPs
+c. Subgroup- We also have a mix of both group and individual in datasets like Movielens, book recs, reddit polls. Here we have demographic attributes for the interests along with aggregate opinions.
+
+
+Tasks
+To evaluate any persona dataset on a group simulation the first step would be to align it to the population. For eg: if we take the Twin2k dataset and want to predict GSS, we need to align it with the US Cenusus statistics. We use the IPF algorithm, that aligns the persona dataset to the US Census, across 4 axes: race, gender, age group, political stance.  
