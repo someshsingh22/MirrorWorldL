@@ -1,0 +1,42 @@
+\section{Background and Related Work}
+\label{sec:related}
+
+We review the landscape of LLM-based social simulation with personas, focusing on how simulation capabilities are currently measured and improved, and what persona representations have been developed to support them.
+
+\paragraph{Social simulation with LLMs.}
+We define \emph{social simulation} as the task of predicting what an individual or group would believe, prefer, or choose, given a structured representation of who they are.
+In the LLM setting, this amounts to conditioning a language model on a \emph{persona}---a set of attributes describing a person---and prompting it to respond as that person would.
+Existing benchmarks evaluate this capability exclusively through survey-style tasks:
+OpinionQA~\cite{opinionqa} and GlobalOpinionQA~\cite{globalopinionqa} test reproduction of public opinion distributions;
+CultureBench~\cite{culturebench} and CultureNLI~\cite{culturenli} assess culturally conditioned judgments;
+and SIMBENCH~\cite{simbench} unifies $20$ datasets spanning moral dilemmas, economic games, psychological inventories, and problem-solving, revealing that even top LLMs score below $41/100$ and that instruction-tuning improves consensus responses while degrading performance on pluralistic questions.
+Methods for improving simulation fidelity within this survey paradigm include fine-tuning on large-scale opinion data~\cite{suh_subpop_2025} and post-hoc rectification with small amounts of human responses~\cite{krsteski_valid_2025}.
+However, these benchmarks and methods all operate within the same narrow behavioral domain: they measure whether LLMs can replicate how people answer structured questionnaires.
+Human behavior encompasses far more---what people buy, watch, read, search for, and engage with---and no existing benchmark tests simulation across this broader space.
+The reliability of LLM simulation is further constrained by known failure modes within even this narrow domain: LLMs prompted with demographic identities tend to flatten intra-group diversity and reflect outsider stereotypes rather than in-group perspectives~\cite{wang_flatten_2025}, and Gui and Toubia~\cite{gui_causal_2023} show that standard experimental design practices can introduce confounding when applied to LLM-simulated subjects, since varying one treatment variable systematically affects unspecified covariates.
+
+\paragraph{Persona datasets.}
+The quality of social simulation depends critically on the persona representations used to condition LLMs, and existing datasets present a three-way tradeoff between coverage, depth, and fidelity.
+\emph{Census-based personas} sample demographic attributes from population distributions and serve as a surprisingly strong baseline for survey simulation~\cite{argyle2023out}; extensions such as PERSONA~\cite{castricato_persona_2024} and Bai et al.~\cite{bai_agentic_2024} enrich census samples with procedurally generated psychodemographic attributes.
+These approaches achieve broad population coverage but are inherently shallow---they capture who someone is on paper but not what they care about, consume, or do.
+Whether this shallowness matters has been contested.
+Census-based conditioning performs well on survey tasks, and the Funhouse mega-study~\cite{funhouse} finds that full-persona digital twins barely outperform demographics-only baselines on individual-level accuracy.
+However, the same study shows that full personas dramatically improve correlation with human response heterogeneity, and Hu et al.~\cite{hu_quantifying_2024} find that persona variables provide significant improvements precisely on items where annotators disagree---the high-entropy cases that matter most.
+The apparent sufficiency of demographics dissolves once evaluation demands individual-level discrimination rather than group means.
+%
+\emph{Survey-panel datasets} address depth directly.
+Twin-2K-500~\cite{twin2k500} surveys over $2{,}000$ individuals across $500{+}$ questions spanning personality, cognition, and economic preferences, enabling rigorous digital-twin experiments~\cite{funhouse}.
+But these profiles are static, expensive to construct, limited to thousands of individuals, and---critically---do not capture behavioral signals such as product preferences, media habits, or community participation.
+%
+\emph{Synthetic persona banks} pursue scale: PersonaHub~\cite{personahub} curates up to one billion personas from web data, and DeepPersona~\cite{deeppersona} uses taxonomy-guided generation to produce profiles with hundreds of attributes.
+Yet Li et al.~\cite{li_llm_2025} demonstrate that increasing LLM-generated content in persona attributes systematically exacerbates downstream bias---simpler census-based personas more faithfully track real-world distributions, revealing a fundamental tension between generative scale and distributional fidelity.
+%
+A nascent line of work takes a step toward grounding personas in real behavioral traces: Anthology~\cite{anthology} conditions LLMs on open-ended life narratives from real survey panels to improve distributional alignment over demographic-only conditioning, and Kang et al.~\cite{deepbinding} show that consistent narrative backstories improve simulation of partisan perceptions.
+These results confirm that behavioral grounding improves fidelity, but the datasets themselves remain confined to opinion-level evaluation and do not yet address the broader behavioral space---consumption, preferences, community engagement---that holistic simulation requires.
+Wu et al.~\cite{wu_boundary_2025} formalize this gap as a boundary condition, arguing that LLM-based simulation is most reliable for collective patterns and that extending to individual-level behavioral prediction remains an open frontier.
+
+\paragraph{Adjacent work.}
+Several related lines of research study LLM-based agents and personas in settings distinct from population-level behavioral simulation.
+Agent-based social simulations such as OASIS~\cite{oasis} and LLM-SocioPol~\cite{shirani_sociopol_2025} deploy up to one million LLM-powered agents to replicate specific societal phenomena---information spreading, voter mobilization---but each system targets one or two pre-selected dynamics rather than evaluating simulation broadly across behaviors.
+A larger body of work studies LLMs as role-playing agents for fictional or historical characters, evaluating personality consistency~\cite{wang_incharacter_2024, zhou_characterbench_2024}, linguistic fidelity~\cite{du_twinvoice_2025, wang_rolellm_2024}, and psychological trait expression~\cite{serapio-garcia_personality_2025, wang_evaluating_2025, sorokovikova_llms_2024}, with comprehensive taxonomies provided by Chen et al.~\cite{chen_persona_2024} and Tseng et al.~\cite{tseng_two_2024}.
+These works advance our understanding of LLM persona capabilities at the level of individual character portrayal, but do not address the population-level simulation of real human behaviors across diverse behavioral domains that is the focus of our work.

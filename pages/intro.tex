@@ -1,8 +1,57 @@
 \section{Introduction}
+\label{sec:intro}
 
+Accurately simulating human behavior---predicting what people believe, prefer, and choose---is fundamental to social science, public policy, and market research.
+Large language models (LLMs) have emerged as promising engines for such \emph{social simulation}, and a growing body of benchmarks evaluates their ability to reproduce survey responses on topics from political attitudes to moral reasoning~\cite{opinionqa, globalopinionqa, culturebench, culturenli, simbench}.
+Yet these benchmarks capture only a narrow slice of human behavior.
+People reveal who they are not merely through survey answers but through the products they buy, the media they consume, the communities they inhabit, and the queries they search.
+By leaving this vast behavioral landscape untested, current evaluation paradigms create a critical blind spot: we cannot assess---and therefore cannot systematically improve---how faithfully LLMs simulate the full complexity of human behavior.
 
+This evaluation gap carries consequences well beyond measurement.
+The persona datasets that power LLM-based simulation have been shaped by, and optimized for, the narrow benchmarks available.
+Census-level demographics achieve surprisingly strong survey-simulation performance~\cite{argyle2023out}, which has led some to question whether richer persona representations are even necessary.
+But the question is poorly posed: it is not that depth is unnecessary, but that current benchmarks fail to \emph{test} it.
+In practice, the most consequential applications of social simulation lie not in survey replication but in \emph{targeting}: given a product, policy, or message, identifying \emph{who} is most likely to engage.
+This is the problem of Ideal Customer Profiling (ICP)---te natural \emph{inverse} of social simulation.
+Where forward simulation estimates $p(\text{behavior} \mid \text{persona})$, ICP estimates $p(\text{persona} \mid \text{item})$.
+Effective targeting demands behavioral detail---interests, consumption patterns, lifestyle markers---that demographics alone cannot provide.
+Without evaluating both directions, we obtain a dangerously incomplete picture of whether LLMs and their supporting persona datasets genuinely capture human behavioral diversity.
+The ICP task thus emerges as the missing key: it directly tests the richer, deeper persona signals that survey-only evaluation leaves invisible.
 
+Extending evaluation to the full behavioral spectrum presents three interrelated challenges.
+First, interest-level and consumption behaviors lack the clean labeled benchmarks that survey research provides; ground truth must be engineered from noisy, large-scale behavioral traces such as product reviews, viewing histories, and online community activity.
+Second, constructing personas from such traces requires bridging unstructured signals---review text, post histories, community memberships---into structured representations without introducing the very LLM-driven biases we aim to measure.
+Third, evaluating the inverse direction demands large-scale user--item datasets annotated at the persona level, a resource that does not natively exist and must be carefully constructed from co-occurring behavioral signals.
 
+Prior approaches each address part of the problem but leave critical gaps.
+\emph{Census-based simulation} leverages nationally representative demographic distributions and serves as a strong baseline for survey tasks, but its shallow attribute space cannot distinguish individuals who share demographics yet diverge in interests and consumption---it cannot tell a chess-playing 25-year-old from a gaming one.
+\emph{Survey-panel datasets} such as Twin-2K-500~\cite{twin2k500} construct deep per-person profiles from hundreds of psychological, cognitive, and preference questions, but are limited to ${\sim}2{,}000$ static individuals and---as a recent mega-study of $19$ pre-registered experiments demonstrates~\cite{funhouse}---yield only modest individuation: full-persona digital twins barely outperform demographics-only baselines on accuracy ($0.748$ vs.\ $0.746$) and correlate weakly with human responses (average $r = 0.20$), exhibiting systematic distortions including stereotyping, insufficient individuation, and hyper-rationality.
+\emph{Synthetic persona banks} such as PersonaHub~\cite{personahub} scale to millions but inherit LLM generation biases and are not grounded in real human behavior, underperforming census baselines on simulation tasks.
+Crucially, none of these approaches have been evaluated on consumption or interest-level behaviors, nor on inverse targeting tasks, because no such evaluation framework existed.
+
+We propose \textbf{Generalized Social Simulation}: a unified evaluation paradigm that tests persona datasets across both the forward direction (predicting behavior from personas) and the inverse direction (identifying personas from behavior) over a substantially broader range of human behaviors.
+On the forward side, we extend simulation evaluation beyond surveys to include movie preferences (MovieLens), book ratings (Goodreads), product engagement (Amazon Reviews), community-level opinions (Reddit polls), and locale-specific search behavior (Google Trends).
+On the inverse side, we introduce the first grounded ICP benchmark constructed from the Amazon Reviews dataset (${\sim}55$M users, ${\sim}570$M reviews, ${\sim}48$M items): we extract natural-language personas from user review histories and product co-occurrence patterns, build a persona--item bipartite graph, and evaluate whether LLM-generated customer profiles match the empirical persona distribution of each product's actual reviewers.
+We further present an adaptive persona elicitation protocol that iteratively selects maximally informative questions conditioned on a downstream task, moving beyond static survey instruments.
+We release a large-scale dataset of behavior-grounded natural-language personas derived from real digital traces along with our full evaluation suite.
+
+\medskip
+\noindent We organize our contributions around three research questions:
+\begin{enumerate}
+    \item[\textbf{RQ1.}] \textbf{Generalized Forward Simulation.} How should we evaluate social simulation beyond survey responses, encompassing interest-level and consumption-based human behaviors?
+    \item[\textbf{RQ2.}] \textbf{Inverse Simulation via ICP.} Can LLMs identify ideal customer profiles for products, and what does this inverse capability reveal about the quality and depth of persona datasets?
+    \item[\textbf{RQ3.}] \textbf{Persona Dataset Requirements.} What properties must a persona dataset possess to support both forward simulation and inverse targeting, and how do current datasets fall short?
+\end{enumerate}
+
+\noindent Our key contributions are:
+\begin{enumerate}
+    \item A unified evaluation framework for \emph{Generalized Social Simulation} spanning forward simulation (survey attitudes and consumption/interest behaviors) and inverse simulation (ICP), providing a holistic assessment of persona dataset quality (\S\ref{sec:framework}).
+    \item New grounded evaluation tasks covering both directions: ICP benchmarking via Amazon Reviews, interest-level simulation via movie/book/product preferences, group-level opinion simulation via Reddit polls, and locale-level trend prediction via Google Trends (\S\ref{sec:tasks}).
+    \item A large-scale, behavior-grounded persona dataset derived from real-world digital traces, with an accompanying adaptive persona elicitation protocol for online settings (\S\ref{sec:personas}).
+    \item Empirical evidence that current evaluation paradigms systematically underestimate the gap between LLM simulation and real human behavior, and that behavior-grounded personas partially close this gap on both forward and inverse evaluations (\S\ref{sec:experiments}).
+\end{enumerate}
+
+\section{scratch}
 Key contributions:
 1. We introduce the first method to evaluate LLM's capabilities to find ICPs
 2. We enable persona benchmarking on generalised social simulation.
